@@ -9,12 +9,7 @@ const defaultValues = {
   sizes: [{ size: 'M', stock: 0 }],
 };
 
-export default function ProductForm({
-  product,
-  onSubmit,
-  busy,
-  serverErrors = {},
-}) {
+export default function ProductForm({ product, onSubmit, busy }) {
   const {
     register,
     control,
@@ -52,9 +47,7 @@ export default function ProductForm({
               },
             })}
           />
-          {(errors.title || serverErrors.title) && (
-            <small>{errors.title?.message || serverErrors.title}</small>
-          )}
+          {errors.title && <small>{errors.title.message}</small>}
         </label>
         <label className="field">
           <span>Price</span>
@@ -75,12 +68,7 @@ export default function ProductForm({
               })}
             />
           </div>
-          {(errors.currency || serverErrors.currency) && (
-            <small>{errors.currency?.message || serverErrors.currency}</small>
-          )}
-          {(errors.amount || serverErrors.amount) && (
-            <small>{errors.amount?.message || serverErrors.amount}</small>
-          )}
+          {errors.amount && <small>{errors.amount.message}</small>}
         </label>
       </div>
       <label className="field">
@@ -99,11 +87,7 @@ export default function ProductForm({
             },
           })}
         />
-        {(errors.description || serverErrors.description) && (
-          <small>
-            {errors.description?.message || serverErrors.description}
-          </small>
-        )}
+        {errors.description && <small>{errors.description.message}</small>}
       </label>
       <div className="size-row">
         <span className="field-label">Sizes & stock</span>
@@ -130,22 +114,11 @@ export default function ProductForm({
                 min: { value: 0, message: 'Stock cannot be negative' },
               })}
             />
-            {(errors.sizes?.[index]?.size ||
-              serverErrors[`sizes.${index}.size`]) && (
-              <small>
-                {errors.sizes?.[index]?.size?.message ||
-                  serverErrors[`sizes.${index}.size`]}
-              </small>
-            )}
-            {(errors.sizes?.[index]?.stock ||
-              serverErrors[`sizes.${index}.stock`]) && (
-              <small>
-                {errors.sizes?.[index]?.stock?.message ||
-                  serverErrors[`sizes.${index}.stock`]}
-              </small>
-            )}
           </div>
         ))}
+        {errors.sizes?.[0]?.stock && (
+          <small>{errors.sizes[0].stock.message}</small>
+        )}
       </div>
       <label className="field file-field">
         <span>Product images</span>

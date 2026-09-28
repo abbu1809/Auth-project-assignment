@@ -116,7 +116,7 @@ npm run build
 
 ## Deploying Frontend and Backend to Vercel
 
-This repository is configured as one Vercel project. Vercel builds the Vite app into the root `dist` directory and exposes the Express backend through `api/index.js` under the same `/api` path.
+This repository is configured as one Vercel project. Vercel builds the Vite app from `frontend/dist` and exposes the Express backend through `api/index.js` under the same `/api` path.
 
 1. Push the repository to GitHub.
 2. Import the repository as a new Vercel project.

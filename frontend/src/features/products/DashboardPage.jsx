@@ -7,31 +7,17 @@ export default function DashboardPage() {
   const { data, isLoading, isError } = useProducts();
   const { create, update, remove } = useProductMutations();
   const [editing, setEditing] = useState(null);
-  const [formError, setFormError] = useState('');
-  const [serverErrors, setServerErrors] = useState({});
   const products = data?.data?.products || [];
 
   const save = async (values, files) => {
-    try {
-      setFormError('');
-      setServerErrors({});
-      if (editing) await update.mutateAsync({ id: editing._id, values, files });
-      else await create.mutateAsync({ values, files });
-      setEditing(null);
-    } catch (error) {
-      setFormError(error.message);
-      setServerErrors(normalizeFieldErrors(error.fields));
-    }
+    if (editing) await update.mutateAsync({ id: editing._id, values, files });
+    else await create.mutateAsync({ values, files });
+    setEditing(null);
   };
 
   const deleteProduct = async (id) => {
-    if (!window.confirm('Delete this product permanently?')) return;
-    try {
-      setFormError('');
+    if (window.confirm('Delete this product permanently?'))
       await remove.mutateAsync(id);
-    } catch (error) {
-      setFormError(error.message);
-    }
   };
 
   return (
@@ -66,12 +52,10 @@ export default function DashboardPage() {
               <X size={20} />
             </button>
           </div>
-          {formError && <p className="form-error">{formError}</p>}
           <ProductForm
             product={editing._id ? editing : null}
             onSubmit={save}
             busy={create.isPending || update.isPending}
-            serverErrors={serverErrors}
           />
         </section>
       )}
@@ -105,17 +89,6 @@ export default function DashboardPage() {
         </div>
       </section>
     </div>
-  );
-}
-
-function normalizeFieldErrors(fields = {}) {
-  return Object.fromEntries(
-    Object.entries(fields).map(([field, message]) => [
-      field
-        .replace(/^price\.amount$/, 'amount')
-        .replace(/^sizes\[(\d+)\]\./, 'sizes.$1.'),
-      message,
-    ])
   );
 }
 

@@ -49,15 +49,10 @@ export default function AuthPage({ mode }) {
           </p>
           <h2>{isRegister ? 'Start your shop' : 'Sign in to Mercado'}</h2>
         </div>
-        <form
-          onSubmit={handleSubmit(submit)}
-          className="auth-form"
-          autoComplete="on"
-        >
+        <form onSubmit={handleSubmit(submit)} className="auth-form">
           {isRegister && (
             <Field
               label="Your name"
-              autoComplete="name"
               error={errors.name}
               {...register('name', { required: 'Name is required' })}
             />
@@ -65,7 +60,6 @@ export default function AuthPage({ mode }) {
           <Field
             label="Email address"
             type="email"
-            autoComplete="email"
             error={errors.email}
             {...register('email', {
               required: 'Email is required',
@@ -78,7 +72,6 @@ export default function AuthPage({ mode }) {
           <Field
             label="Password"
             type="password"
-            autoComplete={isRegister ? 'new-password' : 'current-password'}
             error={errors.password}
             {...register('password', {
               required: 'Password is required',
@@ -92,7 +85,6 @@ export default function AuthPage({ mode }) {
             <Field
               label="Confirm password"
               type="password"
-              autoComplete="new-password"
               error={errors.confirmPassword}
               {...register('confirmPassword', {
                 required: 'Please confirm your password',

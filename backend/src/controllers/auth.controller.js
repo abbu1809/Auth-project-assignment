@@ -2,6 +2,13 @@ import userModel from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateTokens, verifyRefreshToken } from '../utils/auth.utils.js';
 
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  path: '/',
+};
+
 /*
 Register controller
 */
@@ -49,9 +56,7 @@ export const registerUserController = async (req, res) => {
     refreshToken,
   });
 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-  });
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   return res.status(201).json({
     message: 'User registered successfully',
@@ -110,9 +115,7 @@ export const loginUserController = async (req, res) => {
     refreshToken,
   });
 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-  });
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   return res.status(200).json({
     message: 'User logged in successfully',
@@ -159,7 +162,7 @@ export const getRefreshController = async (req, res) => {
         refreshToken: null,
       });
 
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', refreshCookieOptions);
 
       return res.status(401).json({
         message: 'Refresh token mismatch',
@@ -175,9 +178,7 @@ export const getRefreshController = async (req, res) => {
       refreshToken: newRefreshToken,
     });
 
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-    });
+    res.cookie('refreshToken', newRefreshToken, refreshCookieOptions);
 
     return res.status(200).json({
       message: 'Tokens refreshed successfully',
@@ -218,7 +219,6 @@ export const getMeController = async (req, res) => {
   });
 };
 
-
 /**
  * logout controller
  */
@@ -229,7 +229,7 @@ export const logoutController = async (req, res) => {
     refreshToken: null,
   });
 
-  res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken', refreshCookieOptions);
 
   return res.status(200).json({
     message: 'User logged out successfully',
