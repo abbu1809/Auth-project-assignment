@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const client = axios.create({
   withCredentials: true,
+  baseURL: apiUrl,
 });
 
 export const apiRequest = async (path, options = {}) => {
@@ -44,7 +46,7 @@ export const authApi = {
       body: JSON.stringify(values),
     }),
   me: () => apiRequest('/api/auth/me'),
-  refresh: () => apiRequest('/api/auth/refresh', { method: 'GET' }),
+  refresh: () => apiRequest('/api/auth/refresh', { method: 'POST' }),
   logout: () => apiRequest('/api/auth/logout', { method: 'GET' }),
 };
 
@@ -63,17 +65,24 @@ const productFormData = (values, files) => {
 
 export const productsApi = {
   list: () => apiRequest('/api/products'),
-  get: (id) => apiRequest(`/api/products/${id}`),
+  get: (id) => {
+    if (!id) throw new Error('Product id is required');
+    return apiRequest(`/api/products/${id}`);
+  },
   create: (values, files) =>
     apiRequest('/api/products', {
       method: 'POST',
       body: productFormData(values, files),
     }),
-  update: (id, values, files) =>
-    apiRequest(`/api/products/update/${id}`, {
+  update: (id, values, files) => {
+    if (!id) throw new Error('Product id is required');
+    return apiRequest(`/api/products/update/${id}`, {
       method: 'PUT',
       body: productFormData(values, files),
-    }),
-  remove: (id) =>
-    apiRequest(`/api/products/delete/${id}`, { method: 'DELETE' }),
+    });
+  },
+  remove: (id) => {
+    if (!id) throw new Error('Product id is required');
+    return apiRequest(`/api/products/delete/${id}`, { method: 'DELETE' });
+  },
 };

@@ -43,9 +43,6 @@ The repository contains a Node.js/Express backend and a Vite/React frontend.
 │   │   ├── services/         Axios API client
 │   │   └── styles.css
 │   └── package.json
-├── api/
-│   └── index.js             Vercel serverless Express entry point
-├── vercel.json              Vercel rewrites and build configuration
 └── README.md
 ```
 
@@ -114,25 +111,26 @@ cd frontend
 npm run build
 ```
 
-## Deploying Frontend and Backend to Vercel
+## Deploying Backend to Render and Frontend to Vercel
 
-This repository is configured as one Vercel project. Vercel builds the Vite app from `frontend/dist` and exposes the Express backend through `api/index.js` under the same `/api` path.
+Push the repository to GitHub first. Deploy the backend before the frontend so the Render URL is available.
 
-1. Push the repository to GitHub.
-2. Import the repository as a new Vercel project.
-3. Keep the project root set to the repository root. Do not set it to `frontend` or `backend`.
-4. Add these Vercel environment variables for the Production environment:
+### Render backend
 
-- `MONGO_URI`
-- `ACCESS_TOKEN_SECRET`
-- `REFRESH_TOKEN_SECRET`
-- `IMAGEKIT_PUBLIC_KEY`
-- `IMAGEKIT_PRIVATE_KEY`
-- `IMAGEKIT_URL_ENDPOINT`
+1. Create a Render Web Service from the repository.
+2. Set the service root directory to `backend`.
+3. Use `npm install` as the build command and `npm start` as the start command.
+4. Add `MONGO_URI`, `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET`, `IMAGEKIT_PUBLIC_KEY`, `IMAGEKIT_PRIVATE_KEY`, and `IMAGEKIT_URL_ENDPOINT` as secret environment variables.
+5. Set `NODE_ENV=production` and `FRONTEND_URL` to the final Vercel URL, for example `https://your-app.vercel.app`.
 
-5. Deploy. The frontend and API will share the same domain, so the existing Axios `/api` requests and refresh-token cookie work without a separate frontend API URL.
+### Vercel frontend
 
-The Vercel build command is defined in `vercel.json` and runs the frontend build. MongoDB must be reachable from Vercel, so use a hosted MongoDB deployment and allow the required network access in its settings.
+1. Import the same repository as a Vercel project.
+2. Set the Vercel root directory to `frontend`.
+3. Add `VITE_API_URL` with the deployed Render URL, for example `https://your-api.onrender.com`.
+4. Deploy. The frontend Axios client will send requests to `VITE_API_URL/api/...` and include the refresh-token cookie.
+
+Use `npm run build` as the Vercel build command and `dist` as the output directory. The Render service must be reachable from the browser, and its CORS `FRONTEND_URL` value must exactly match the Vercel origin.
 
 ## API Reference
 

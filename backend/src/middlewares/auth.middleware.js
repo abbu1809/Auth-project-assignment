@@ -19,7 +19,7 @@ export function authenticate(req, res, next) {
 }
 
 export function authenticateSeller(req, res, next) {
-  if (req.user.role !== 'seller') {
+  if (!req.user || req.user.role !== 'seller') {
     return res.status(403).json({
       message: 'Forbidden: You do not have permission to do this action',
     });

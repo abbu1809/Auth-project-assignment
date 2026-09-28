@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser } from './authSlice';
+import { forwardRef } from 'react';
 
 export default function AuthPage({ mode }) {
   const isRegister = mode === 'register';
@@ -18,13 +19,15 @@ export default function AuthPage({ mode }) {
   if (accessToken) return <Navigate to="/" replace />;
 
   const submit = async (values) => {
-    const action = isRegister
-      ? registerUser(values)
-      : loginUser({ email: values.email, password: values.password });
+    const request = isRegister ? registerUser : loginUser;
+    const payload = isRegister
+      ? values
+      : { email: values.email, password: values.password };
+    const action = request(payload);
     const result = await dispatch(action);
 
-    if (action.fulfilled.match(result)) navigate('/');
-    if (action.rejected.match(result) && result.payload?.fields) {
+    if (request.fulfilled.match(result)) navigate('/');
+    if (request.rejected.match(result) && result.payload?.fields) {
       Object.entries(result.payload.fields).forEach(([field, message]) => {
         setError(field, { type: 'server', message });
       });
@@ -113,12 +116,12 @@ export default function AuthPage({ mode }) {
   );
 }
 
-function Field({ label, error, ...props }) {
+const Field = forwardRef(function Field({ label, error, ...props }, ref) {
   return (
     <label className="field">
       <span>{label}</span>
-      <input {...props} />
+      <input ref={ref} {...props} />
       {error && <small>{error.message}</small>}
     </label>
   );
-}
+});

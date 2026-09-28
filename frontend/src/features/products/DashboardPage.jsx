@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { useProducts, useProductMutations } from './productsApi';
 import ProductForm from './ProductForm';
 
 export default function DashboardPage() {
+  const user = useSelector((state) => state.auth.user);
+  const canManageProducts = user?.role === 'seller';
   const { data, isLoading, isError } = useProducts();
   const { create, update, remove } = useProductMutations();
   const [editing, setEditing] = useState(null);
   const products = data?.data?.products || [];
 
   const save = async (values, files) => {
-    if (editing) await update.mutateAsync({ id: editing._id, values, files });
+    if (editing?._id)
+      await update.mutateAsync({ id: editing._id, values, files });
     else await create.mutateAsync({ values, files });
     setEditing(null);
   };
@@ -24,18 +28,26 @@ export default function DashboardPage() {
     <div className="dashboard">
       <section className="dashboard-head">
         <div>
-          <p className="eyebrow">Seller studio / inventory</p>
+          <p className="eyebrow">
+            {canManageProducts ? 'Seller studio / inventory' : 'Catalog'}
+          </p>
           <h1>What’s on the shelf?</h1>
-          <p className="muted">Keep your catalog considered and current.</p>
+          <p className="muted">
+            {canManageProducts
+              ? 'Keep your catalog considered and current.'
+              : 'Browse the current product catalog.'}
+          </p>
         </div>
-        <button
-          className="primary-button add-button"
-          onClick={() => setEditing({})}
-        >
-          <Plus size={18} /> Add product
-        </button>
+        {canManageProducts && (
+          <button
+            className="primary-button add-button"
+            onClick={() => setEditing({})}
+          >
+            <Plus size={18} /> Add product
+          </button>
+        )}
       </section>
-      {editing && (
+      {canManageProducts && editing && (
         <section className="editor">
           <div className="editor-head">
             <div>
@@ -82,8 +94,9 @@ export default function DashboardPage() {
             <ProductCard
               key={product._id}
               product={product}
-              onEdit={() => setEditing(product)}
-              onDelete={() => deleteProduct(product._id)}
+              onEdit={canManageProducts ? () => setEditing(product) : undefined}
+              onDelete={canManageProducts ? () => deleteProduct(product._id) : undefined}
+              canManage={canManageProducts}
             />
           ))}
         </div>
@@ -92,7 +105,7 @@ export default function DashboardPage() {
   );
 }
 
-function ProductCard({ product, onEdit, onDelete }) {
+function ProductCard({ product, onEdit, onDelete, canManage }) {
   return (
     <article className="product-card">
       <div className="product-image">
@@ -114,18 +127,20 @@ function ProductCard({ product, onEdit, onDelete }) {
           {product.price?.currency} {product.price?.amount}
         </strong>
       </div>
-      <div className="card-actions">
-        <button className="small-button" onClick={onEdit}>
-          <Pencil size={14} /> Edit
-        </button>
-        <button
-          className="danger-button"
-          onClick={onDelete}
-          aria-label={`Delete ${product.title}`}
-        >
-          <Trash2 size={15} />
-        </button>
-      </div>
+      {canManage && (
+        <div className="card-actions">
+          <button className="small-button" onClick={onEdit}>
+            <Pencil size={14} /> Edit
+          </button>
+          <button
+            className="danger-button"
+            onClick={onDelete}
+            aria-label={`Delete ${product.title}`}
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      )}
     </article>
   );
 }
