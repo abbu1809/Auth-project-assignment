@@ -95,7 +95,9 @@ export default function DashboardPage() {
               key={product._id}
               product={product}
               onEdit={canManageProducts ? () => setEditing(product) : undefined}
-              onDelete={canManageProducts ? () => deleteProduct(product._id) : undefined}
+              onDelete={
+                canManageProducts ? () => deleteProduct(product._id) : undefined
+              }
               canManage={canManageProducts}
             />
           ))}
