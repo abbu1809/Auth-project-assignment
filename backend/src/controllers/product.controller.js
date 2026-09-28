@@ -22,7 +22,7 @@ export const createProductController = async (req, res) => {
     },
     sizes: req.body.sizes,
     images: fileUrls,
-    seller: req.userId,
+    seller: req.user.userId,
   });
 
   res.status(201).json({
@@ -98,7 +98,7 @@ export const unlistProductController = async (req, res) => {
     });
   }
 
-  if (product.seller.toString() !== req.userId) {
+  if (product.seller.toString() !== req.user.userId) {
     return res.status(403).json({
       message: 'Forbidden: You do not have permission to unlist this product',
     });
@@ -120,7 +120,7 @@ export const listProductController = async (req, res) => {
     });
   }
 
-  if (product.seller.toString() !== req.userId) {
+  if (product.seller.toString() !== req.user.userId) {
     return res.status(403).json({
       message: 'Forbidden: You do not have permission to unlist this product',
     });
@@ -142,7 +142,7 @@ export const updateProductController = async (req, res) => {
     });
   }
 
-  if (product.seller.toString() !== req.userId) {
+  if (product.seller.toString() !== req.user.userId) {
     return res.status(403).json({
       message: 'Forbidden: You do not have permission to update this product',
     });
@@ -185,7 +185,7 @@ export const deleteProductController = async (req, res) => {
     });
   }
 
-  if (product.seller.toString() !== req.userId) {
+  if (product.seller.toString() !== req.user.userId) {
     return res.status(403).json({
       message: 'Forbidden: You do not have permission to delete this product',
     });

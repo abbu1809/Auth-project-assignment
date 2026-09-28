@@ -4,8 +4,27 @@ import { authApi } from '../../services/api';
 const savedToken = sessionStorage.getItem('accessToken');
 const savedUser = sessionStorage.getItem('user');
 
-export const registerUser = createAsyncThunk('auth/register', authApi.register);
-export const loginUser = createAsyncThunk('auth/login', authApi.login);
+const authRequest =
+  (request) =>
+  async (values, { rejectWithValue }) => {
+    try {
+      return await request(values);
+    } catch (error) {
+      return rejectWithValue({
+        message: error.message,
+        fields: error.fields,
+      });
+    }
+  };
+
+export const registerUser = createAsyncThunk(
+  'auth/register',
+  authRequest(authApi.register)
+);
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  authRequest(authApi.login)
+);
 export const loadCurrentUser = createAsyncThunk(
   'auth/me',
   async (_, { rejectWithValue }) => {
@@ -50,7 +69,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload?.message || action.error.message;
       })
       .addCase(loginUser.pending, (state) => {
         state.status = 'loading';
@@ -65,7 +84,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload?.message || action.error.message;
       })
       .addCase(loadCurrentUser.fulfilled, (state, action) => {
         state.status = 'succeeded';

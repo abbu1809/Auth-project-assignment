@@ -25,6 +25,7 @@ export const apiRequest = async (path, options = {}) => {
   } catch (requestError) {
     const payload = requestError.response?.data || {};
     const error = new Error(payload.message || 'Something went wrong');
+    error.status = requestError.response?.status;
     error.fields = Object.fromEntries(
       (payload.errors || []).map((item) => [item.path, item.msg])
     );
@@ -44,7 +45,7 @@ export const authApi = {
       body: JSON.stringify(values),
     }),
   me: () => apiRequest('/api/auth/me'),
-  refresh: () => apiRequest('/api/auth/refresh', { method: 'GET' }),
+  refresh: () => apiRequest('/api/auth/refresh', { method: 'POST' }),
   logout: () => apiRequest('/api/auth/logout', { method: 'GET' }),
 };
 
