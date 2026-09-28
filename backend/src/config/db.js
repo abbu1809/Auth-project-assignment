@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import config from './config.js';
 
 let connectionPromise;
@@ -15,11 +15,11 @@ const connectDb = async () => {
 
   try {
     await connectionPromise;
-    console.log("MongoDB connected successfully");
-  }catch (error) {
-    console.error("Error connecting to MongoDB:", error);
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
     throw error;
   }
-}
+};
 
 export default connectDb;

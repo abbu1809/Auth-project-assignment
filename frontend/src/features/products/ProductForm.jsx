@@ -10,7 +10,13 @@ const defaultValues = {
 };
 
 export default function ProductForm({ product, onSubmit, busy }) {
-  const { register, control, handleSubmit, reset, formState: { errors } } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: getDefaultValues(product),
   });
   const { fields } = useFieldArray({ control, name: 'sizes' });
@@ -31,8 +37,14 @@ export default function ProductForm({ product, onSubmit, busy }) {
           <input
             {...register('title', {
               required: 'Title is required',
-              minLength: { value: 2, message: 'Title must be at least 2 characters' },
-              maxLength: { value: 100, message: 'Title must be at most 100 characters' },
+              minLength: {
+                value: 2,
+                message: 'Title must be at least 2 characters',
+              },
+              maxLength: {
+                value: 100,
+                message: 'Title must be at most 100 characters',
+              },
             })}
           />
           {errors.title && <small>{errors.title.message}</small>}
@@ -40,7 +52,9 @@ export default function ProductForm({ product, onSubmit, busy }) {
         <label className="field">
           <span>Price</span>
           <div className="price-input">
-            <select {...register('currency', { required: 'Currency is required' })}>
+            <select
+              {...register('currency', { required: 'Currency is required' })}
+            >
               <option>INR</option>
               <option>USD</option>
             </select>
@@ -63,8 +77,14 @@ export default function ProductForm({ product, onSubmit, busy }) {
           rows="4"
           {...register('description', {
             required: 'Description is required',
-            minLength: { value: 20, message: 'Description must be at least 20 characters' },
-            maxLength: { value: 500, message: 'Description must be at most 500 characters' },
+            minLength: {
+              value: 20,
+              message: 'Description must be at least 20 characters',
+            },
+            maxLength: {
+              value: 500,
+              message: 'Description must be at most 500 characters',
+            },
           })}
         />
         {errors.description && <small>{errors.description.message}</small>}
@@ -74,7 +94,9 @@ export default function ProductForm({ product, onSubmit, busy }) {
         {fields.map((field, index) => (
           <div className="size-input" key={field.id}>
             <select
-              {...register(`sizes.${index}.size`, { required: 'Size is required' })}
+              {...register(`sizes.${index}.size`, {
+                required: 'Size is required',
+              })}
             >
               <option>XS</option>
               <option>S</option>
@@ -94,7 +116,9 @@ export default function ProductForm({ product, onSubmit, busy }) {
             />
           </div>
         ))}
-        {errors.sizes?.[0]?.stock && <small>{errors.sizes[0].stock.message}</small>}
+        {errors.sizes?.[0]?.stock && (
+          <small>{errors.sizes[0].stock.message}</small>
+        )}
       </div>
       <label className="field file-field">
         <span>Product images</span>
@@ -121,10 +145,11 @@ function getDefaultValues(product) {
         description: product.description || '',
         amount: product.price?.amount ?? '',
         currency: product.price?.currency || 'INR',
-        sizes: product.sizes?.map((item) => ({
-          size: item.size,
-          stock: item.stock,
-        })) || defaultValues.sizes,
+        sizes:
+          product.sizes?.map((item) => ({
+            size: item.size,
+            stock: item.stock,
+          })) || defaultValues.sizes,
       }
     : defaultValues;
 }

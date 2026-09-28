@@ -1,4 +1,9 @@
-import { createBrowserRouter, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  useNavigate,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../features/auth/authSlice';
 import AuthPage from '../features/auth/AuthPage';
@@ -22,13 +27,19 @@ function AppShell() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="/">mercado<span>.</span></a>
+        <a className="brand" href="/">
+          mercado<span>.</span>
+        </a>
         <div className="account-actions">
           <span className="user-name">{user?.name || 'Account'}</span>
-          <button className="text-button" onClick={logout}>Sign out</button>
+          <button className="text-button" onClick={logout}>
+            Sign out
+          </button>
         </div>
       </header>
-      <main><Outlet /></main>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 }
@@ -38,7 +49,12 @@ const router = createBrowserRouter([
   { path: '/register', element: <AuthPage mode="register" /> },
   {
     element: <ProtectedRoute />,
-    children: [{ element: <AppShell />, children: [{ path: '/', element: <DashboardPage /> }] }],
+    children: [
+      {
+        element: <AppShell />,
+        children: [{ path: '/', element: <DashboardPage /> }],
+      },
+    ],
   },
   { path: '*', element: <Navigate to="/" replace /> },
 ]);

@@ -123,12 +123,12 @@ This repository is configured as one Vercel project. Vercel builds the Vite app 
 3. Keep the project root set to the repository root. Do not set it to `frontend` or `backend`.
 4. Add these Vercel environment variables for the Production environment:
 
-  - `MONGO_URI`
-  - `ACCESS_TOKEN_SECRET`
-  - `REFRESH_TOKEN_SECRET`
-  - `IMAGEKIT_PUBLIC_KEY`
-  - `IMAGEKIT_PRIVATE_KEY`
-  - `IMAGEKIT_URL_ENDPOINT`
+- `MONGO_URI`
+- `ACCESS_TOKEN_SECRET`
+- `REFRESH_TOKEN_SECRET`
+- `IMAGEKIT_PUBLIC_KEY`
+- `IMAGEKIT_PRIVATE_KEY`
+- `IMAGEKIT_URL_ENDPOINT`
 
 5. Deploy. The frontend and API will share the same domain, so the existing Axios `/api` requests and refresh-token cookie work without a separate frontend API URL.
 
@@ -140,13 +140,13 @@ All API routes are prefixed with `/api`.
 
 ### Authentication
 
-| Method | Endpoint | Access | Description |
-| --- | --- | --- | --- |
-| `POST` | `/api/auth/register` | Public | Create a user account |
-| `POST` | `/api/auth/login` | Public | Authenticate and return an access token |
-| `POST` | `/api/auth/refresh` | Public with refresh cookie | Issue a new access token |
-| `GET` | `/api/auth/me` | Authenticated | Return the current user |
-| `GET` | `/api/auth/logout` | Authenticated | Invalidate the refresh token |
+| Method | Endpoint             | Access                     | Description                             |
+| ------ | -------------------- | -------------------------- | --------------------------------------- |
+| `POST` | `/api/auth/register` | Public                     | Create a user account                   |
+| `POST` | `/api/auth/login`    | Public                     | Authenticate and return an access token |
+| `POST` | `/api/auth/refresh`  | Public with refresh cookie | Issue a new access token                |
+| `GET`  | `/api/auth/me`       | Authenticated              | Return the current user                 |
+| `GET`  | `/api/auth/logout`   | Authenticated              | Invalidate the refresh token            |
 
 Send the access token on protected requests:
 
@@ -158,16 +158,16 @@ The refresh token is handled through the browser cookie. Do not store passwords 
 
 ### Products
 
-| Method | Endpoint | Access | Description |
-| --- | --- | --- | --- |
-| `POST` | `/api/products` | Authenticated seller | Create a product |
-| `GET` | `/api/products` | Authenticated | List products |
-| `GET` | `/api/products/:id` | Authenticated | Get one product |
-| `GET` | `/api/products/seller` | Authenticated seller | List seller products |
-| `PUT` | `/api/products/update/:id` | Authenticated seller | Update a product |
-| `DELETE` | `/api/products/delete/:id` | Authenticated seller | Delete a product |
-| `PATCH` | `/api/products/list/:id` | Authenticated seller | Publish a product |
-| `PATCH` | `/api/products/unlist/:id` | Authenticated seller | Unpublish a product |
+| Method   | Endpoint                   | Access               | Description          |
+| -------- | -------------------------- | -------------------- | -------------------- |
+| `POST`   | `/api/products`            | Authenticated seller | Create a product     |
+| `GET`    | `/api/products`            | Authenticated        | List products        |
+| `GET`    | `/api/products/:id`        | Authenticated        | Get one product      |
+| `GET`    | `/api/products/seller`     | Authenticated seller | List seller products |
+| `PUT`    | `/api/products/update/:id` | Authenticated seller | Update a product     |
+| `DELETE` | `/api/products/delete/:id` | Authenticated seller | Delete a product     |
+| `PATCH`  | `/api/products/list/:id`   | Authenticated seller | Publish a product    |
+| `PATCH`  | `/api/products/unlist/:id` | Authenticated seller | Unpublish a product  |
 
 Product create and update requests use `multipart/form-data`. Use these fields:
 
